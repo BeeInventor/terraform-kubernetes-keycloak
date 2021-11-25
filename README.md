@@ -1,5 +1,38 @@
 # Usage
 
+```hcl
+module "keycloak" {
+  source = "git::ssh://git@github.com:BeeInventor/terraform-module-keycloak.git?ref=master"
+
+  # image     = "mihaibob/keycloak:15.0.1"
+  namespace = local.namespace
+
+  # autoscaling = {
+  #   min_replicas = 3
+  #   max_replicas = 10
+  # }
+
+  env = {
+    DB_VENDOR   = "postgres"
+    DB_ADDR     = ""
+    DB_PORT     = ""
+    DB_DATABASE = ""
+    DB_USER     = ""
+    DB_PASSWORD = ""
+
+    KEYCLOAK_USER            = "admin"
+    KEYCLOAK_PASSWORD        = "admin"
+  }
+
+  # startup_scripts = {
+  #   "test.sh" = "#!/bin/sh\necho 'Hello from my custom startup script!'"
+  # }
+}
+```
+
+
+# Development
+
 After starting the dev container:
 
 1. run the following commands (in devcontainer):
