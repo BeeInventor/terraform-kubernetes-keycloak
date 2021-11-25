@@ -28,12 +28,6 @@ module "keycloak" {
 
     KEYCLOAK_USER            = "admin"
     KEYCLOAK_PASSWORD        = "admin"
-    PROXY_ADDRESS_FORWARDING = "true"
-
-    JGROUPS_DISCOVERY_PROTOCOL       = "kubernetes.KUBE_PING"
-    KUBERNETES_NAMESPACE             = local.namespace
-    CACHE_OWNERS_COUNT               = "2"
-    CACHE_OWNERS_AUTH_SESSIONS_COUNT = "2"
   }
 
   startup_scripts = {

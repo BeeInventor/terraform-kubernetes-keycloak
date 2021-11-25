@@ -79,6 +79,31 @@ resource "kubernetes_stateful_set" "keycloak" {
               value = each.value
             }
           }
+
+          env {
+            name = "PROXY_ADDRESS_FORWARDING"
+            value = "true"
+          }
+          
+          env {
+            name = "JGROUPS_DISCOVERY_PROTOCOL"
+            value = "kubernetes.KUBE_PING"
+          }
+          
+          env {
+            name = "KUBERNETES_NAMESPACE"
+            value = var.namespace
+          }
+          
+          env {
+            name = "CACHE_OWNERS_COUNT"
+            value = "2"
+          }
+          
+          env {
+            name = "CACHE_OWNERS_AUTH_SESSIONS_COUNT"
+            value = "2"
+          }
         }
 
         volume {
