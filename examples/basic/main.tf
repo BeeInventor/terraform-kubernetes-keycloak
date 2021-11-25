@@ -8,7 +8,7 @@ locals {
 }
 
 module "keycloak" {
-  source = "../src"
+  source = "../.."
 
   image     = "mihaibob/keycloak:15.0.1"
   namespace = local.namespace
