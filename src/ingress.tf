@@ -1,9 +1,9 @@
 resource "kubernetes_ingress" "keycloak" {
   count = var.ingress == null ? 0 : 1
-  
+
   metadata {
-    name = "${var.name}-http"
-    namespace = var.namespace
+    name        = "${var.name}-http"
+    namespace   = var.namespace
     annotations = var.ingress.annotations
   }
 
