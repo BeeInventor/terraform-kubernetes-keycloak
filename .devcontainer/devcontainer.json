@@ -26,7 +26,7 @@
 	// "postCreateCommand": "kubectl version",
 
 	// Use 'postStartCommand' to run commands after the container is created like starting minikube.
-	// "postStartCommand": "",
+	"postStartCommand": "minikube start --kubernetes-version=v1.21.6",
 
 	// Minikube does not like running as root, so use a non-root user.
 	"remoteUser": "vscode",
