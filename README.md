@@ -1,4 +1,11 @@
-# Usage
+# Keycloak in Kubernetes as a Terraform Module
+
+This repo contains a Terraform module which manage a keycloak deployment inside kubernetes.
+- Keycloak itself is deployed as a [StatefulSet](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/).
+- Autoscaling can be optionally enabled.
+- Support custom startup scripts
+
+## Usage
 
 ```hcl
 module "keycloak" {
@@ -7,6 +14,10 @@ module "keycloak" {
   # image     = "mihaibob/keycloak:15.0.1"
   namespace = local.namespace
 
+  ## Hardcode number of replicas. Ignored when autoscaling is enabled.
+  replicas = 3
+  
+  ## Enable autoscaling
   # autoscaling = {
   #   min_replicas = 3
   #   max_replicas = 10
@@ -24,6 +35,7 @@ module "keycloak" {
     KEYCLOAK_PASSWORD        = "admin"
   }
 
+  ## Extra startup scripts
   # startup_scripts = {
   #   "test.sh" = "#!/bin/sh\necho 'Hello from my custom startup script!'"
   # }
@@ -31,7 +43,7 @@ module "keycloak" {
 ```
 
 
-# Development
+## Development
 
 After starting the dev container:
 
@@ -59,3 +71,7 @@ terraform apply -auto-approve
 4. navigate to keycloak page (in host machine)
 
 - open `keycloak.example.com:<port>` (where port is the forwarded port in step 2)
+
+## References
+
+- Keycloak Helm Chart: https://github.com/codecentric/helm-charts/tree/master/charts/keycloak

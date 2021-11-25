@@ -44,7 +44,6 @@ module "keycloak" {
 module "postgresql" {
   source  = "ballj/postgresql/kubernetes"
   version = "1.1.0"
-  # insert the 7 required variables here
 
   namespace     = local.namespace
   object_prefix = "keycloak-postgresql"
