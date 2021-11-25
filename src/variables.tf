@@ -36,3 +36,8 @@ variable "env" {
 	type = map(string)
 	default = {}
 }
+
+variable "startup_scripts" {
+	type = map(string)
+	default = {}
+}

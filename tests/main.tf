@@ -18,6 +18,13 @@ module "keycloak" {
 		DB_DATABASE = local.db.name
 		DB_USER = local.db.username
 		DB_PASSWORD = local.db.password
+		
+  	KEYCLOAK_USER = "admin"
+  	KEYCLOAK_PASSWORD = "admin"
+	}
+	
+	startup_scripts = {
+		"test.sh" = "#!/bin/sh\necho 'Hello from my custom startup script!'"
 	}
 }
 

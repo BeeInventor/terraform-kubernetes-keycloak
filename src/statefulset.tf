@@ -1,15 +1,3 @@
-locals {
-  selector_labels = {
-    "app.kubernetes.io/name": var.name
-    # "app.kubernetes.io/instance": {{ .Release.Name }}
-  }
-}
-
-# resource "kubernetes_namespace" "monitoring" {
-#   metadata {
-#     name = "monitoring"
-#   }
-# }
 
 
 // ref: https://github.com/codecentric/helm-charts/blob/master/charts/keycloak/templates/statefulset.yaml
@@ -25,7 +13,7 @@ resource "kubernetes_stateful_set" "keycloak" {
       match_labels = local.selector_labels
     }
     
-    service_name = "${var.name}-headless"
+    service_name = kubernetes_service.headless.metadata[0].name
 
     template {
       metadata {
@@ -59,6 +47,17 @@ resource "kubernetes_stateful_set" "keycloak" {
             protocol = "TCP"
           }
           
+          dynamic "volume_mount" {
+            for_each = local.startup_scripts.entries
+            iterator = each
+            content {
+              name = local.startup_scripts.volume_name
+              mount_path = "/opt/jboss/startup-scripts/${each.key}"
+              sub_path = each.key
+              read_only = true
+            }
+          }
+          
           # resources {
           #   limits = {
           #     cpu    = "1000m"
@@ -81,9 +80,21 @@ resource "kubernetes_stateful_set" "keycloak" {
           }
         }
         
-        # init_container {
-          
-        # }
+        volume {
+          name = local.startup_scripts.volume_name
+          config_map {
+            name = kubernetes_config_map.startup.metadata[0].name
+            default_mode = "0555" # 5 = rx
+            # dynamic "items" {
+            #   for_each = local.startup_scripts.entries
+            #   iterator = each
+            #   content = {
+            #     key = each.key
+            #     path = each.key
+            #   }
+            # }
+          }
+        }
       }
     }
   }
