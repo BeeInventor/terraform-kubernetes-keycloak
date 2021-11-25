@@ -6,14 +6,14 @@ resource "kubernetes_stateful_set" "keycloak" {
     name      = var.name
     namespace = var.namespace
   }
+  
   spec {
-    replicas = var.replicas
+    replicas     = var.autoscaling == null ? var.replicas : null
+    service_name = kubernetes_service.headless.metadata[0].name
 
     selector {
       match_labels = local.selector_labels
     }
-
-    service_name = kubernetes_service.headless.metadata[0].name
 
     template {
       metadata {
@@ -25,8 +25,8 @@ resource "kubernetes_stateful_set" "keycloak" {
         #   name = "some-secret-name"
         # }
         container {
-          image = var.image
           name  = var.name
+          image = var.image
           # image_pull_policy = "Always"
 
           port {
@@ -50,6 +50,7 @@ resource "kubernetes_stateful_set" "keycloak" {
           dynamic "volume_mount" {
             for_each = local.startup_scripts.entries
             iterator = each
+            
             content {
               name       = local.startup_scripts.volume_name
               mount_path = "/opt/jboss/startup-scripts/${each.key}"

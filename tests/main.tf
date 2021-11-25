@@ -10,7 +10,14 @@ locals {
 module "keycloak" {
   source = "../src"
 
-  image = "mihaibob/keycloak:15.0.1"
+  image     = "mihaibob/keycloak:15.0.1"
+  namespace = local.namespace
+
+  autoscaling = {
+    min_replicas = 3
+    max_replicas = 10
+  }
+
   env = {
     DB_VENDOR   = "postgres"
     DB_ADDR     = module.postgresql.hostname
@@ -19,8 +26,14 @@ module "keycloak" {
     DB_USER     = local.db.username
     DB_PASSWORD = local.db.password
 
-    KEYCLOAK_USER     = "admin"
-    KEYCLOAK_PASSWORD = "admin"
+    KEYCLOAK_USER            = "admin"
+    KEYCLOAK_PASSWORD        = "admin"
+    PROXY_ADDRESS_FORWARDING = "true"
+
+    JGROUPS_DISCOVERY_PROTOCOL       = "kubernetes.KUBE_PING"
+    KUBERNETES_NAMESPACE             = local.namespace
+    CACHE_OWNERS_COUNT               = "2"
+    CACHE_OWNERS_AUTH_SESSIONS_COUNT = "2"
   }
 
   startup_scripts = {

@@ -13,7 +13,7 @@ resource "kubernetes_ingress" "keycloak" {
       http {
         path {
           backend {
-            service_name = "${var.name}-http"
+            service_name = kubernetes_service.http.metadata[0].name
             service_port = 80
           }
 

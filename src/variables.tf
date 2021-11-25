@@ -32,6 +32,14 @@ variable "ingress" {
   default = {}
 }
 
+variable "autoscaling" {
+  type = object({
+    min_replicas = number
+    max_replicas = number
+  })
+  default = null
+}
+
 variable "env" {
   type    = map(string)
   default = {}
