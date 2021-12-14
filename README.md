@@ -9,7 +9,7 @@ This repo contains a Terraform module which manage a keycloak deployment inside 
 
 ```hcl
 module "keycloak" {
-  source = "git::ssh://git@github.com:BeeInventor/terraform-module-keycloak.git?ref=master"
+  source = "github.com/BeeInventor/terraform-kubernetes-keycloak"
 
   # image     = "mihaibob/keycloak:15.0.1"
   namespace = local.namespace
