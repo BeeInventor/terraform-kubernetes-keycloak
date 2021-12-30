@@ -6,7 +6,7 @@ resource "kubernetes_stateful_set" "keycloak" {
     name      = var.name
     namespace = var.namespace
   }
-  
+
   spec {
     replicas     = var.autoscaling == null ? var.replicas : null
     service_name = kubernetes_service.headless.metadata[0].name
@@ -50,7 +50,7 @@ resource "kubernetes_stateful_set" "keycloak" {
           dynamic "volume_mount" {
             for_each = local.startup_scripts.entries
             iterator = each
-            
+
             content {
               name       = local.startup_scripts.volume_name
               mount_path = "/opt/jboss/startup-scripts/${each.key}"
@@ -59,16 +59,10 @@ resource "kubernetes_stateful_set" "keycloak" {
             }
           }
 
-          # resources {
-          #   limits = {
-          #     cpu    = "1000m"
-          #     memory = "1500M"
-          #   }
-          #   requests = {
-          #     cpu    = "100m"
-          #     memory = "200M"
-          #   }
-          # }
+          resources {
+            limits   = try(var.resources.limits, null)
+            requests = try(var.resources.requests, null)
+          }
 
           dynamic "env" {
             for_each = var.env
@@ -81,27 +75,27 @@ resource "kubernetes_stateful_set" "keycloak" {
           }
 
           env {
-            name = "PROXY_ADDRESS_FORWARDING"
+            name  = "PROXY_ADDRESS_FORWARDING"
             value = "true"
           }
-          
+
           env {
-            name = "JGROUPS_DISCOVERY_PROTOCOL"
+            name  = "JGROUPS_DISCOVERY_PROTOCOL"
             value = "kubernetes.KUBE_PING"
           }
-          
+
           env {
-            name = "KUBERNETES_NAMESPACE"
+            name  = "KUBERNETES_NAMESPACE"
             value = var.namespace
           }
-          
+
           env {
-            name = "CACHE_OWNERS_COUNT"
+            name  = "CACHE_OWNERS_COUNT"
             value = "2"
           }
-          
+
           env {
-            name = "CACHE_OWNERS_AUTH_SESSIONS_COUNT"
+            name  = "CACHE_OWNERS_AUTH_SESSIONS_COUNT"
             value = "2"
           }
         }

@@ -57,3 +57,22 @@ variable "startup_scripts" {
   type        = map(string)
   default     = {}
 }
+
+variable "resources" {
+  type = object({
+    limits = optional(object({
+      cpu    = optional(string)
+      memory = optional(string)
+    }))
+    requests = optional(object({
+      cpu    = optional(string)
+      memory = optional(string)
+    }))
+  })
+  default = {
+    requests = {
+      cpu    = 0.01
+      memory = "500M"
+    }
+  }
+}
