@@ -16,6 +16,7 @@ module "keycloak" {
   autoscaling = {
     min_replicas = 3
     max_replicas = 10
+    target_cpu_utilization_percentage = 200
   }
 
   env = {

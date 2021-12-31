@@ -25,8 +25,9 @@ variable "replicas" {
 variable "autoscaling" {
   description = "Enable auto-scaling via horizontal pod autoscaler"
   type = object({
-    min_replicas = number
-    max_replicas = number
+    min_replicas                      = number
+    max_replicas                      = number
+    target_cpu_utilization_percentage = number
   })
   default = null
 }

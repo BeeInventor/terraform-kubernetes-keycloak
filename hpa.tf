@@ -7,8 +7,9 @@ resource "kubernetes_horizontal_pod_autoscaler" "consumer" {
   }
 
   spec {
-    max_replicas = var.autoscaling.max_replicas
-    min_replicas = var.autoscaling.min_replicas
+    max_replicas                      = var.autoscaling.max_replicas
+    min_replicas                      = var.autoscaling.min_replicas
+    target_cpu_utilization_percentage = var.autoscaling.target_cpu_utilization_percentage
 
     scale_target_ref {
       api_version = "apps/v1"
