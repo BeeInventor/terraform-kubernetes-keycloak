@@ -72,7 +72,7 @@ variable "resources" {
   })
   default = {
     requests = {
-      cpu    = 0.01
+      cpu    = 0.1
       memory = "500M"
     }
   }
