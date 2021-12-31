@@ -120,3 +120,16 @@ resource "kubernetes_stateful_set" "keycloak" {
   }
 }
 
+resource "kubernetes_pod_disruption_budget" "main" {
+  count = var.autoscaling != null || var.replicas > 1 ? 1 : 0
+  metadata {
+    name = var.name
+    namespace = var.namespace
+  }
+  spec {
+    min_available = 1
+    selector {
+      match_labels = local.selector_labels
+    }
+  }
+}
