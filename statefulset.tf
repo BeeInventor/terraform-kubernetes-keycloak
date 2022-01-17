@@ -63,6 +63,25 @@ resource "kubernetes_stateful_set" "keycloak" {
             limits   = try(var.resources.limits, null)
             requests = try(var.resources.requests, null)
           }
+          
+          startup_probe {
+            http_get {
+              path = "/health"
+              port = 9990
+            }
+
+            initial_delay_seconds = 60 # wait for a minute before the first probe (it is slow)
+            period_seconds        = 20 # try every 20s
+            failure_threshold     = 30 # try 30 times
+          }
+
+          liveness_probe {
+            http_get {
+              path   = "/health"
+              port   = 9990
+            }
+            
+          }
 
           dynamic "env" {
             for_each = var.env
@@ -97,6 +116,13 @@ resource "kubernetes_stateful_set" "keycloak" {
           env {
             name  = "CACHE_OWNERS_AUTH_SESSIONS_COUNT"
             value = "2"
+          }
+          
+          env {
+            # note: this enables the /metrics endpoint, it also makes the management endpoint bind to 0.0.0.0 thus allow probing the /health endpoint
+            # see: https://github.com/keycloak/keycloak-containers/blob/5df2de0500983e7424b321cca83a02c31da18fb3/server/tools/docker-entrypoint.sh#L94-L96
+            name  = "KEYCLOAK_STATISTICS"
+            value = "all"
           }
         }
 
