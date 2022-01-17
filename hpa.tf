@@ -1,4 +1,4 @@
-resource "kubernetes_horizontal_pod_autoscaler" "consumer" {
+resource "kubernetes_horizontal_pod_autoscaler" "main" {
   count = var.autoscaling == null ? 0 : 1
 
   metadata {
