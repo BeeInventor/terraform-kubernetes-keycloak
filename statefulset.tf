@@ -63,7 +63,7 @@ resource "kubernetes_stateful_set" "keycloak" {
             limits   = try(var.resources.limits, null)
             requests = try(var.resources.requests, null)
           }
-          
+
           startup_probe {
             http_get {
               path = "/health"
@@ -77,10 +77,10 @@ resource "kubernetes_stateful_set" "keycloak" {
 
           liveness_probe {
             http_get {
-              path   = "/health"
-              port   = 9990
+              path = "/health"
+              port = 9990
             }
-            
+
           }
 
           dynamic "env" {
@@ -117,7 +117,7 @@ resource "kubernetes_stateful_set" "keycloak" {
             name  = "CACHE_OWNERS_AUTH_SESSIONS_COUNT"
             value = "2"
           }
-          
+
           env {
             # note: this enables the /metrics endpoint, it also makes the management endpoint bind to 0.0.0.0 thus allow probing the /health endpoint
             # see: https://github.com/keycloak/keycloak-containers/blob/5df2de0500983e7424b321cca83a02c31da18fb3/server/tools/docker-entrypoint.sh#L94-L96
@@ -141,6 +141,27 @@ resource "kubernetes_stateful_set" "keycloak" {
             # }
           }
         }
+
+        dynamic "affinity" {
+          for_each = length(var.affinity_required_node_labels) > 0 ? [1] : []
+          content {
+            node_affinity {
+              required_during_scheduling_ignored_during_execution {
+                node_selector_term {
+                  dynamic "match_expressions" {
+                    for_each = toset(var.affinity_required_node_labels)
+                    content {
+                      key      = match_expressions.key.key
+                      operator = match_expressions.key.operator
+                      values   = match_expressions.key.values
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
       }
     }
   }
@@ -149,7 +170,7 @@ resource "kubernetes_stateful_set" "keycloak" {
 resource "kubernetes_pod_disruption_budget" "main" {
   count = var.autoscaling != null || var.replicas > 1 ? 1 : 0
   metadata {
-    name = var.name
+    name      = var.name
     namespace = var.namespace
   }
   spec {

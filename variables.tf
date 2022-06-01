@@ -77,3 +77,12 @@ variable "resources" {
     }
   }
 }
+
+variable "affinity_required_node_labels" {
+  type = list(object({
+    key      = string
+    operator = string
+    values   = list(string)
+  }))
+  default = []
+}
