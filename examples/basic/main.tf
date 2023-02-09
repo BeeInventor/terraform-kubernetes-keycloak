@@ -16,6 +16,7 @@ module "keycloak" {
   autoscaling = {
     min_replicas = 3
     max_replicas = 10
+
     target_cpu_utilization_percentage = 200
   }
 
@@ -27,8 +28,8 @@ module "keycloak" {
     DB_USER     = local.db.username
     DB_PASSWORD = local.db.password
 
-    KEYCLOAK_USER            = "admin"
-    KEYCLOAK_PASSWORD        = "admin"
+    KEYCLOAK_USER     = "admin"
+    KEYCLOAK_PASSWORD = "admin"
   }
 
   startup_scripts = {
@@ -45,11 +46,11 @@ module "postgresql" {
 
   name            = local.db.name # database name
   username        = local.db.username
-  password_secret = kubernetes_secret.postgresql_password.metadata[0].name
+  password_secret = kubernetes_secret_v1.postgresql_password.metadata[0].name
   password_key    = "password"
 }
 
-resource "kubernetes_secret" "postgresql_password" {
+resource "kubernetes_secret_v1" "postgresql_password" {
   metadata {
     name      = "postgresql-password"
     namespace = local.namespace

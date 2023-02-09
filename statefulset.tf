@@ -1,7 +1,7 @@
 
 
 // ref: https://github.com/codecentric/helm-charts/blob/master/charts/keycloak/templates/statefulset.yaml
-resource "kubernetes_stateful_set" "keycloak" {
+resource "kubernetes_stateful_set_v1" "keycloak" {
   metadata {
     name      = var.name
     namespace = var.namespace
@@ -9,7 +9,7 @@ resource "kubernetes_stateful_set" "keycloak" {
 
   spec {
     replicas     = var.autoscaling == null ? var.replicas : null
-    service_name = kubernetes_service.headless.metadata[0].name
+    service_name = kubernetes_service_v1.headless.metadata[0].name
 
     selector {
       match_labels = local.selector_labels
@@ -129,7 +129,7 @@ resource "kubernetes_stateful_set" "keycloak" {
         volume {
           name = local.startup_scripts.volume_name
           config_map {
-            name         = kubernetes_config_map.startup.metadata[0].name
+            name         = kubernetes_config_map_v1.startup.metadata[0].name
             default_mode = "0555" # 5 = rx
             # dynamic "items" {
             #   for_each = local.startup_scripts.entries
@@ -167,7 +167,7 @@ resource "kubernetes_stateful_set" "keycloak" {
   }
 }
 
-resource "kubernetes_pod_disruption_budget" "main" {
+resource "kubernetes_pod_disruption_budget_v1" "main" {
   count = var.autoscaling != null || var.replicas > 1 ? 1 : 0
   metadata {
     name      = var.name

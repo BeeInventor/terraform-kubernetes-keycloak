@@ -1,4 +1,4 @@
-resource "kubernetes_service" "headless" {
+resource "kubernetes_service_v1" "headless" {
   metadata {
     name      = "${var.name}-headless"
     namespace = var.namespace
@@ -20,7 +20,7 @@ resource "kubernetes_service" "headless" {
   }
 }
 
-resource "kubernetes_service" "http" {
+resource "kubernetes_service_v1" "http" {
   metadata {
     name      = "${var.name}-http"
     namespace = var.namespace

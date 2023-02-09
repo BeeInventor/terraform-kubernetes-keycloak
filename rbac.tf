@@ -1,5 +1,5 @@
 # TODO: allow config via variables
-resource "kubernetes_role" "main" {
+resource "kubernetes_role_v1" "main" {
   metadata {
     name      = var.name
     namespace = var.namespace
@@ -11,7 +11,7 @@ resource "kubernetes_role" "main" {
   }
 }
 
-resource "kubernetes_role_binding" "main" {
+resource "kubernetes_role_binding_v1" "main" {
   metadata {
     name      = var.name
     namespace = var.namespace
@@ -19,7 +19,7 @@ resource "kubernetes_role_binding" "main" {
   role_ref {
     api_group = "rbac.authorization.k8s.io"
     kind      = "Role"
-    name      = kubernetes_role.main.metadata[0].name
+    name      = kubernetes_role_v1.main.metadata[0].name
   }
   subject {
     kind      = "ServiceAccount"
